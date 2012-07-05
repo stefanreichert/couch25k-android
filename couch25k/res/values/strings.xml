@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, CouchDBMobileActivity!</string>
+    <string name="app_name">Couch25k</string>
+    <string name="runlog_list_label">%d run(s) displayed</string>
+    <string name="run_distance_label">Distance</string>
+    <string name="run_time_label">Time</string>
+    <string name="run_title_label">Title</string>
+    <string name="run_trackpoint_count_label">Trackpoints</string>
+    <string name="menu_run_start">Start Tracking</string>
+    <string name="menu_run_stop">Stop Tracking</string>
+    <string name="menu_run_map">Show Map</string>
+    <string name="menu_runlog_user">Change User</string>
+    <string name="menu_runlog_run">New Run</string>
+    <string name="user_title">Change the current user&#8230;</string>
+    <string name="user_enter_name_request">Please enter your name.</string>
+    <string name="user_proceed">Proceed</string>
+    <string name="newrun_title">Start a new run&#8230;</string>
+    <string name="newrun_enter_title_request">Please enter the run\'s title.</string>
+    <string name="newrun_proceed">Proceed</string>
+    <string name="progress_title">Working</string>
+    <string name="progress_loading">Load Data&#8230;</string>
+    <string name="progress_wait_for_signal">Wait For Signal&#8230;</string>
+
+</resources>

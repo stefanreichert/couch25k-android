@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/run_labelTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="100dip"
+            android:text="@string/run_title_label" />
+
+        <TextView
+            android:id="@+id/run_textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelTitle" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/run_labelTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="100dip"
+            android:text="@string/run_time_label" />
+
+        <Chronometer
+            android:id="@+id/run_chronometerTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelTime"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/run_labelDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="100dip"
+            android:text="@string/run_distance_label" />
+
+        <TextView
+            android:id="@+id/run_textDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelDistance"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/run_labelTrackpointCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="100dip"
+            android:text="@string/run_trackpoint_count_label" />
+
+        <TextView
+            android:id="@+id/run_textTrackpointCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelTrackpointCount"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+</LinearLayout>

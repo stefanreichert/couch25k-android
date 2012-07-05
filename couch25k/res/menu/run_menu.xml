@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/run_menu_start"
+        android:icon="@+drawable/play"
+        android:title="@string/menu_run_start">
+    </item>
+    <item
+        android:id="@+id/run_menu_stop"
+        android:icon="@+drawable/stop"
+        android:title="@string/menu_run_stop">
+    </item>
+    <item
+        android:id="@+id/run_menu_runmap"
+        android:icon="@+drawable/map"
+        android:title="@string/menu_run_map">
+    </item>
+
+</menu>

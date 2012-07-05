@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/runLog_menu_user"
+        android:icon="@+drawable/user"
+        android:title="@string/menu_runlog_user">
+    </item>
+    <item
+        android:id="@+id/runLog_menu_run"
+        android:icon="@+drawable/run"
+        android:title="@string/menu_runlog_run">
+    </item>
+
+</menu>
