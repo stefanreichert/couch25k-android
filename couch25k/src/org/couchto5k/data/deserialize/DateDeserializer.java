@@ -13,10 +13,9 @@ import org.codehaus.jackson.map.JsonDeserializer;
 
 public class DateDeserializer extends JsonDeserializer<Date> {
 
-	private String[] formats = new String[] { "yyyy-MM-dd", "yyyy-MM-dd HH:mm",
-			"yyyy-MM-dd HH:mmZ", "yyyy-MM-dd HH:mm:ss.SSSZ",
+	private String[] formats = new String[] { "yyyy-MM-dd'T'HH:mm:ss'Z'",
 			"yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss Z",
-			"yyyy-MM-dd'T'HH:mm:ss'Z'" };
+			"yyyy-MM-dd HH:mmZ", "yyyy-MM-dd HH:mm", "yyyy-MM-dd" };
 
 	@Override
 	public Date deserialize(JsonParser parser, DeserializationContext context)
