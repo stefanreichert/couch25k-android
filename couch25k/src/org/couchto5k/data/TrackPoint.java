@@ -2,8 +2,8 @@ package org.couchto5k.data;
 
 import java.util.Date;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.DateSerializer;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.couchto5k.data.deserialize.DateDeserializer;
 import org.ektorp.support.CouchDbDocument;
 
 public class TrackPoint extends CouchDbDocument implements
@@ -50,12 +50,11 @@ public class TrackPoint extends CouchDbDocument implements
 		this.lat = lat;
 	}
 
-	@JsonSerialize(as = Date.class, using = DateSerializer.class)
 	public Date getTime() {
 		return time;
 	}
 
-	// @JsonDeserialize(as = Date.class, using = DateDeserializer.class)
+	@JsonDeserialize(as = Date.class, using = DateDeserializer.class)
 	public void setTime(Date time) {
 		this.time = time;
 	}
