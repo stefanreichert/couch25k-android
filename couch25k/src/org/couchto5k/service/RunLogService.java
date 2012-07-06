@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +26,6 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.couchbase.touchdb.TDDatabase;
@@ -41,7 +39,8 @@ public class RunLogService extends Service {
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
 
-//	private static final String COUCH25K_REMOTE_DB = "http://peterfriese.iriscouch.com:5984/couch25k";
+	// private static final String COUCH25K_REMOTE_DB =
+	// "http://peterfriese.iriscouch.com:5984/couch25k";
 	private static final String COUCH25K_REMOTE_DB = "http://stefanreichert.iriscouch.com:5984/couch25k";
 	private static final String COUCH25K_DB = "couch25k";
 	private static final String TAG = "RunLogService";
@@ -307,9 +306,6 @@ public class RunLogService extends Service {
 			trackPoint.setUser(run.getUser());
 			trackPoint.setLat(location.getLatitude());
 			trackPoint.setLon(location.getLongitude());
-			java.text.DateFormat dateFormat = DateFormat
-					.getDateFormat(RunLogService.this);
-			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 			trackPoint.setTime(new Date());
 			_saveTrackPoint(trackPoint);
 		}

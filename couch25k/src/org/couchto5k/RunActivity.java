@@ -22,7 +22,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
@@ -194,8 +193,6 @@ public class RunActivity extends Activity {
 			Thread checkTrackerThread = new Thread("run signal worker") {
 				@Override
 				public void run() {
-					Looper.prepare();
-					runLogService.traceRun(run);
 					while (run.getTrackPoints().isEmpty()) {
 						try {
 							sleep(500);
@@ -206,6 +203,7 @@ public class RunActivity extends Activity {
 					handler.sendMessage(Message.obtain());
 				}
 			};
+			runLogService.traceRun(run);
 			checkTrackerThread.start();
 			showDialog(WAIT_FOR_SIGNAL_PROGRESS_DIALOG);
 			return true;

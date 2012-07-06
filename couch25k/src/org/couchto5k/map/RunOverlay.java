@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
@@ -48,21 +47,14 @@ public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 			Point pointTwo = new Point();
 			projection.toPixels(itemTwo.getPoint(), pointTwo);
 			paint.setStrokeWidth(5);
-			paint.setAlpha(120);
 			canvas.drawLine(pointOne.x, pointOne.y, pointTwo.x, pointTwo.y,
 					paint);
 		}
-		super.draw(canvas, mapView, shadow);
 	}
 
 	@Override
 	protected TrackPointOverlayItem createItem(int i) {
 		return overlays.get(i);
-	}
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-		return true;
 	}
 
 	@Override

@@ -13,8 +13,10 @@ import org.codehaus.jackson.map.JsonDeserializer;
 
 public class DateDeserializer extends JsonDeserializer<Date> {
 
-	private String[] formats = new String[] { "yyyy-MM-DD HH:mm:ss",
-			"yyyy-MM-DD HH:mm:ss Z", "yyyy-MM-dd'T'HH:mm:ss'Z'" };
+	private String[] formats = new String[] { "yyyy-MM-dd", "yyyy-MM-dd HH:mm",
+			"yyyy-MM-dd HH:mmZ", "yyyy-MM-dd HH:mm:ss.SSSZ",
+			"yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss Z",
+			"yyyy-MM-dd'T'HH:mm:ss'Z'" };
 
 	@Override
 	public Date deserialize(JsonParser parser, DeserializationContext context)
@@ -33,8 +35,10 @@ public class DateDeserializer extends JsonDeserializer<Date> {
 			}
 		}
 		try {
+			// try default parsing
 			return DateFormat.getInstance().parse(dateAsString);
 		} catch (Exception exception) {
+			// hmm, didn't work dude!
 			throw new IOException("unknown date");
 		}
 	}

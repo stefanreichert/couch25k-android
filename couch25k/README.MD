@@ -4,9 +4,9 @@ This repo contains the android version of the couch25k mobile app.
 
 ## Prerequisites
 
-couch25k is based on android 2.2 (API Level 8), Google API (MapView), Touch DB (HEAD 70d89ec8e4d4f4b170a627ac4b9180b42e1b8701) and Ektorp.
+couch25k is based on Android 2.2 (API Level 8), Google API (MapView), Touch DB (HEAD 70d89ec8e4d4f4b170a627ac4b9180b42e1b8701) and Ektorp.
 
-* [Haskell](http://www.haskell.org/)
+* [TouchDB Android](https://github.com/couchbaselabs/TouchDB-Android/)
 * Hakyll(http://jaspervdj.be/hakyll/)
 
 ## Building

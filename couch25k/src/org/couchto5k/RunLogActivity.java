@@ -45,6 +45,13 @@ public class RunLogActivity extends Activity {
 	private Collection<Run> runs;
 	private IRunLogService runLogService;
 
+	final Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			dismissDialog(LOADING_PROGRESS_DIALOG);
+			updateWidgets();
+		};
+	};
+	
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
 		@Override
@@ -55,12 +62,6 @@ public class RunLogActivity extends Activity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			runLogService = (IRunLogService) service;
-			final Handler handler = new Handler() {
-				public void handleMessage(android.os.Message msg) {
-					dismissDialog(LOADING_PROGRESS_DIALOG);
-					updateWidgets();
-				};
-			};
 			Thread loadRunsThread = new Thread("run log worker") {
 
 				@Override
