@@ -15,7 +15,6 @@ import org.couchto5k.data.Run;
 import org.couchto5k.data.TrackPoint;
 import org.couchto5k.data.repository.TrackPointRepository;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.CouchDbInstance;
 import org.ektorp.ReplicationCommand;
 import org.ektorp.http.HttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
@@ -53,6 +52,7 @@ public class RunLogService extends Service {
 	private final Map<String, Run> runMap = new ConcurrentHashMap<String, Run>();
 
 	private TrackPointRepository trackPointRepository;
+	private StdCouchDbInstance couchDBInstance;
 
 	public RunLogService() {
 		observerMap = new ConcurrentHashMap<Run, RunLogService.Observer>();
@@ -70,20 +70,26 @@ public class RunLogService extends Service {
 					COUCH25K_DB, true);
 
 			HttpClient httpClient = new TouchDBHttpClient(touchDBServer);
-			CouchDbInstance couchDBInstance = new StdCouchDbInstance(httpClient);
+			couchDBInstance = new StdCouchDbInstance(httpClient);
 
 			CouchDbConnector couchDBConnector = couchDBInstance
 					.createConnector(COUCH25K_DB, false);
 			trackPointRepository = new TrackPointRepository(couchDBConnector);
 			trackPointRepository.createViews(touchDBInstance);
 
-			initializeReplication(couchDBInstance);
+			initializeReplication();
 		} catch (IOException e) {
 			Log.e(TAG, "Error starting TDServer", e);
 		}
 	}
 
-	private void initializeReplication(final CouchDbInstance couchDBInstance) {
+	@Override
+	public void onDestroy() {
+		stopReplication();
+		super.onDestroy();
+	}
+
+	private void initializeReplication() {
 		ReplicationCommand replicationCommandPull = new ReplicationCommand.Builder()
 				.source(COUCH25K_REMOTE_DB).target(COUCH25K_DB)
 				.continuous(true).build();
@@ -97,6 +103,25 @@ public class RunLogService extends Service {
 				.continuous(true).build();
 		try {
 			couchDBInstance.replicate(replicationCommandPush);
+		} catch (Exception exception) {
+			Log.e(TAG, exception.getMessage(), exception);
+		}
+	}
+
+	private void stopReplication() {
+		ReplicationCommand replicationCommandStopPull = new ReplicationCommand.Builder()
+				.source(COUCH25K_REMOTE_DB).target(COUCH25K_DB).cancel(true)
+				.build();
+		try {
+			couchDBInstance.replicate(replicationCommandStopPull);
+		} catch (Exception exception) {
+			Log.e(TAG, exception.getMessage(), exception);
+		}
+		ReplicationCommand replicationCommandStopPush = new ReplicationCommand.Builder()
+				.source(COUCH25K_DB).target(COUCH25K_REMOTE_DB).cancel(true)
+				.build();
+		try {
+			couchDBInstance.replicate(replicationCommandStopPush);
 		} catch (Exception exception) {
 			Log.e(TAG, exception.getMessage(), exception);
 		}
