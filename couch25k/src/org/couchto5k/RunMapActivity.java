@@ -22,7 +22,6 @@ import android.os.Message;
 
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
 
 public class RunMapActivity extends MapActivity {
 
@@ -80,14 +79,14 @@ public class RunMapActivity extends MapActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.runmap);
-		mapView = (MapView) findViewById(R.id.run_mapview);
+		mapView = (MapView) findViewById(R.id.mapview);
 		runOverlay = new RunOverlay(getResources().getDrawable(
 				R.drawable.trackpoint));
 		mapView.getOverlays().add(runOverlay);
 	}
 
 	private void updateUI() {
-		List<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
+		List<TrackPointOverlayItem> overlayItems = new ArrayList<TrackPointOverlayItem>();
 		for (TrackPoint trackPoint : run.getTrackPoints()) {
 			overlayItems.add(new TrackPointOverlayItem(trackPoint));
 		}

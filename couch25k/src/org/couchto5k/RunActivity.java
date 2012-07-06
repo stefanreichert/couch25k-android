@@ -127,8 +127,10 @@ public class RunActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		runLogService.stopObservingRun(run);
-		runLogService.stopTracingRun(run);
+		if (runLogService != null) {
+			runLogService.stopObservingRun(run);
+			runLogService.stopTracingRun(run);
+		}
 		super.onDestroy();
 	}
 
