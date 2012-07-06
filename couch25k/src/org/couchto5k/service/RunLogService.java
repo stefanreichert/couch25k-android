@@ -39,9 +39,9 @@ public class RunLogService extends Service {
 		TDURLStreamHandlerFactory.registerSelfIgnoreError();
 	}
 
+	private static final String COUCH25K_REMOTE_DB = "http://peterfriese.iriscouch.com:5984/couch25k";
 	// private static final String COUCH25K_REMOTE_DB =
-	// "http://peterfriese.iriscouch.com:5984/couch25k";
-	private static final String COUCH25K_REMOTE_DB = "http://stefanreichert.iriscouch.com:5984/couch25k";
+	// "http://stefanreichert.iriscouch.com:5984/couch25k";
 	private static final String COUCH25K_DB = "couch25k";
 	private static final String TAG = "RunLogService";
 
