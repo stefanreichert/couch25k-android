@@ -1,22 +1,25 @@
 # couch25k-android
 
-This repo contains the android version of the couch25k mobile app.
+This repository contains the android version of the couch25k mobile app.
 
 ## Prerequisites
 
 couch25k is based on Android 2.2 (API Level 8), Google API (MapView), Touch DB (HEAD 70d89ec8e4d4f4b170a627ac4b9180b42e1b8701) and Ektorp.
 
 * [TouchDB Android](https://github.com/couchbaselabs/TouchDB-Android/)
-* Hakyll(http://jaspervdj.be/hakyll/)
+ * Module TouchDB Android
+ * Module TouchDB Android Ektorp (O/R Mapper)
+ * Module TouchDB Android Listener (Replication)
 
-## Building
+## Project Setup
 
-The project comes with a make file to facilitate building. Do one of the following:
+couch25k-android was build with Eclipse Indigo and ADT 18.0.0. The .project file is included so a simple checkout will work. The dependant projects are included as libs, the revision is listed above. You might want to checkout the current revision of TouchDB to get the latest changes. Simply get the TouchDB projects from GitHub, delete all libraries from the `libs` folder and reference the three TouchDB projects as library projects (Android project properties).
+*Just a little hint: It will only work if all 4 projects (couch25k-android and the TouchDB projects) are located in the same folder.*
 
-* `make build` - builds the static site
-* `make preview` - builds the static site and starts a local web server on port 8000
-* `make deploy_dev`- builds the static site and uploads it to your development server
-* `make deploy` - builds the static site and uploads it to your webserver
-* `make publish` - pushes the local repo to Github
+## Google Maps Key
 
-In order to deploy to a web server, you need to provide some options - see the beginning of the build script. The scripts logs in to your server using `rsync`/ `scp`. In order to log in without having to nter your password (or storing it in the script). follow the steps outlined in [this post](http://sleeplessgeek.blogspot.de/2011/03/authorizedkeys-and-scp.html) to set up scp to use authorized keys.
+Google Maps requires a key to work. The key must match the one used for signing the APK. Getting your GoogleMaps key is pretty easy, simply [sign up here](https://developers.google.com/android/maps-api-signup?hl=de). Replace the value for field `android:apiKey` in the *layout/runmap.xml* file with your personal GoogleMaps key.
+
+## Replication
+
+couch25k-android replicates it's data with a remote CouchDB. The target couch is defined as constant `COUCH25K_REMOTE_DB` in class `org.couchto5k.service.RunLogService`. You need to set that entry before starting or packaging couch25-android. The easiest solution for a remote CouchDB is [Iris Couch](http://www.iriscouch.com/).

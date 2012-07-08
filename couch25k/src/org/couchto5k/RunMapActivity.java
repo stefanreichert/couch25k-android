@@ -83,6 +83,7 @@ public class RunMapActivity extends MapActivity {
 		runOverlay = new RunOverlay(getResources().getDrawable(
 				R.drawable.trackpoint));
 		mapView.getOverlays().add(runOverlay);
+		mapView.setKeepScreenOn(true);
 	}
 
 	private void updateUI() {
@@ -92,16 +93,22 @@ public class RunMapActivity extends MapActivity {
 		}
 		runOverlay.addOverlays(overlayItems);
 		mapView.invalidate();
+		// center last trackpoint
+		if (!overlayItems.isEmpty()) {
+			TrackPointOverlayItem item = overlayItems
+					.get(overlayItems.size() - 1);
+			mapView.getController().animateTo(item.getPoint());
+		}
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onStart() {
 		bindService(new Intent(this, RunLogService.class), serviceConnection, 0);
 		super.onResume();
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		unbindService(serviceConnection);
 		super.onPause();
 	}

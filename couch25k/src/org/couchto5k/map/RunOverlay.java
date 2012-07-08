@@ -16,10 +16,11 @@ import com.google.android.maps.Projection;
 public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 
 	private List<TrackPointOverlayItem> overlays = new ArrayList<TrackPointOverlayItem>();
+	private Drawable drawable;
 
 	public RunOverlay(Drawable drawable) {
 		super(boundCenterBottom(drawable));
-
+		this.drawable = drawable;
 	}
 
 	public void addOverlays(List<TrackPointOverlayItem> overlayItems) {
@@ -29,9 +30,6 @@ public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 			}
 		}
 		populate();
-		if (!overlays.isEmpty()) {
-			setFocus(overlays.get(overlays.size() - 1));
-		}
 	}
 
 	@Override
@@ -43,12 +41,30 @@ public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 			Paint paint = new Paint();
 			Point pointOne = new Point();
 			projection.toPixels(itemOne.getPoint(), pointOne);
-			paint.setColor(Color.BLUE);
+			paint.setColor(Color.BLACK);
 			Point pointTwo = new Point();
 			projection.toPixels(itemTwo.getPoint(), pointTwo);
 			paint.setStrokeWidth(5);
 			canvas.drawLine(pointOne.x, pointOne.y, pointTwo.x, pointTwo.y,
 					paint);
+		}
+		// draw startpoint
+		if (!overlays.isEmpty()) {
+			TrackPointOverlayItem item = overlays.get(0);
+			Point point = new Point();
+			Projection projection = mapView.getProjection();
+			projection.toPixels(item.getPoint(), point);
+			int drawableOffset = (drawable.getBounds().width() / 10) * 4;
+			drawAt(canvas, drawable, point.x + drawableOffset, point.y, shadow);
+		}
+		// draw endpoint
+		if (overlays.size() > 1) {
+			TrackPointOverlayItem item = overlays.get(overlays.size() - 1);
+			Point point = new Point();
+			Projection projection = mapView.getProjection();
+			projection.toPixels(item.getPoint(), point);
+			int drawableOffset = (drawable.getBounds().width() / 10) * 4;
+			drawAt(canvas, drawable, point.x + drawableOffset, point.y, shadow);
 		}
 	}
 
