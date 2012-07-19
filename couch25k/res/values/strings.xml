@@ -13,6 +13,7 @@
     <string name="menu_run_map">Show Map</string>
     <string name="menu_runlog_user">Change User</string>
     <string name="menu_runlog_run">New Run</string>
+    <string name="menu_runlog_refresh">Refresh Runs</string>
     <string name="user_title">Change the current user&#8230;</string>
     <string name="user_enter_name_request">Please enter your name.</string>
     <string name="user_proceed">Proceed</string>

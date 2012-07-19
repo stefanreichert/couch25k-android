@@ -11,5 +11,10 @@
         android:icon="@+drawable/run"
         android:title="@string/menu_runlog_run">
     </item>
+    <item
+        android:id="@+id/runLog_menu_refresh"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="@string/menu_runlog_refresh">
+    </item>
 
 </menu>

@@ -51,7 +51,7 @@ public class RunLogActivity extends Activity {
 			updateWidgets();
 		};
 	};
-	
+
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
 		@Override
@@ -62,16 +62,7 @@ public class RunLogActivity extends Activity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			runLogService = (IRunLogService) service;
-			Thread loadRunsThread = new Thread("run log worker") {
-
-				@Override
-				public void run() {
-					runs = runLogService.getRuns();
-					handler.sendMessage(Message.obtain());
-				}
-			};
-			loadRunsThread.start();
-			showDialog(LOADING_PROGRESS_DIALOG);
+			refreshUI();
 		}
 	};
 
@@ -107,6 +98,10 @@ public class RunLogActivity extends Activity {
 		}
 		if (R.id.runLog_menu_run == item.getItemId()) {
 			showDialog(NEWRUN_DIALOG);
+			return true;
+		}
+		if (R.id.runLog_menu_refresh == item.getItemId()) {
+			refreshUI();
 			return true;
 		}
 		return super.onMenuItemSelected(featureId, item);
@@ -196,6 +191,19 @@ public class RunLogActivity extends Activity {
 		Editor editor = preferences.edit();
 		editor.putString(USERNAME_PREFERENCE, name);
 		editor.commit();
+	}
+
+	private void refreshUI() {
+		Thread loadRunsThread = new Thread("run log worker") {
+
+			@Override
+			public void run() {
+				runs = runLogService.getRuns();
+				handler.sendMessage(Message.obtain());
+			}
+		};
+		loadRunsThread.start();
+		showDialog(LOADING_PROGRESS_DIALOG);
 	}
 
 	private void launchRunActivity(String id) {
