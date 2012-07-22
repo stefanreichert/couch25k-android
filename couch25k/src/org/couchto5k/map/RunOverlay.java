@@ -16,11 +16,16 @@ import com.google.android.maps.Projection;
 public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 
 	private List<TrackPointOverlayItem> overlays = new ArrayList<TrackPointOverlayItem>();
-	private Drawable drawable;
+	private Drawable trackpointDefault;
+	private Drawable trackpointStart;
+	private Drawable trackpointFinish;
 
-	public RunOverlay(Drawable drawable) {
-		super(boundCenterBottom(drawable));
-		this.drawable = drawable;
+	public RunOverlay(Drawable trackpointDefault, Drawable trackpointStart,
+			Drawable trackpointFinish) {
+		super(boundCenterBottom(trackpointDefault));
+		this.trackpointDefault = trackpointDefault;
+		this.trackpointStart = boundCenterBottom(trackpointStart);
+		this.trackpointFinish = boundCenterBottom(trackpointFinish);
 	}
 
 	public void addOverlays(List<TrackPointOverlayItem> overlayItems) {
@@ -48,24 +53,26 @@ public class RunOverlay extends ItemizedOverlay<TrackPointOverlayItem> {
 			canvas.drawLine(pointOne.x, pointOne.y, pointTwo.x, pointTwo.y,
 					paint);
 		}
-		// draw startpoint
-		if (!overlays.isEmpty()) {
-			TrackPointOverlayItem item = overlays.get(0);
-			Point point = new Point();
-			Projection projection = mapView.getProjection();
-			projection.toPixels(item.getPoint(), point);
-			int drawableOffset = (drawable.getBounds().width() / 10) * 4;
-			drawAt(canvas, drawable, point.x + drawableOffset, point.y, shadow);
+		// draw point
+		if (overlays.size() == 1) {
+			drawtrackPoint(canvas, mapView, shadow, 0, trackpointDefault);
 		}
-		// draw endpoint
+		// draw start and finish
 		if (overlays.size() > 1) {
-			TrackPointOverlayItem item = overlays.get(overlays.size() - 1);
-			Point point = new Point();
-			Projection projection = mapView.getProjection();
-			projection.toPixels(item.getPoint(), point);
-			int drawableOffset = (drawable.getBounds().width() / 10) * 4;
-			drawAt(canvas, drawable, point.x + drawableOffset, point.y, shadow);
+			drawtrackPoint(canvas, mapView, shadow, 0, trackpointStart);
+			drawtrackPoint(canvas, mapView, shadow, overlays.size() - 1,
+					trackpointFinish);
 		}
+	}
+
+	private void drawtrackPoint(Canvas canvas, MapView mapView, boolean shadow,
+			int overlayIndex, Drawable drawable) {
+		TrackPointOverlayItem item = overlays.get(overlayIndex);
+		Point point = new Point();
+		Projection projection = mapView.getProjection();
+		projection.toPixels(item.getPoint(), point);
+		int drawableOffset = (drawable.getBounds().width() / 10) * 4;
+		drawAt(canvas, drawable, point.x + drawableOffset, point.y, shadow);
 	}
 
 	@Override

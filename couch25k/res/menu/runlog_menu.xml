@@ -13,7 +13,7 @@
     </item>
     <item
         android:id="@+id/runLog_menu_refresh"
-        android:icon="@android:drawable/ic_menu_rotate"
+        android:icon="@drawable/refresh"
         android:title="@string/menu_runlog_refresh">
     </item>
 

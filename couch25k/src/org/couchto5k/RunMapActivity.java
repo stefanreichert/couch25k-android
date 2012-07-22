@@ -15,6 +15,7 @@ import org.couchto5k.service.RunLogService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -80,8 +81,14 @@ public class RunMapActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.runmap);
 		mapView = (MapView) findViewById(R.id.mapview);
-		runOverlay = new RunOverlay(getResources().getDrawable(
-				R.drawable.trackpoint));
+		Drawable trackPointDefault = getResources().getDrawable(
+				R.drawable.trackpoint);
+		Drawable trackPointStart = getResources().getDrawable(
+				R.drawable.trackpoint_start);
+		Drawable trackPointFinish = getResources().getDrawable(
+				R.drawable.trackpoint_finish);
+		runOverlay = new RunOverlay(trackPointDefault, trackPointStart,
+				trackPointFinish);
 		mapView.getOverlays().add(runOverlay);
 		mapView.setKeepScreenOn(true);
 	}

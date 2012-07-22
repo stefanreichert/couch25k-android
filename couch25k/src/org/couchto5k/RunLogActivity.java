@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -147,16 +148,18 @@ public class RunLogActivity extends Activity {
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		if (id == USER_DIALOG) {
-			TextView textName = (TextView) dialog
+			EditText textName = (EditText) dialog
 					.findViewById(R.id.user_textName);
 			textName.setText(getUserName());
+			textName.setSelection(textName.getText().length());
 		} else if (id == NEWRUN_DIALOG) {
-			TextView textTitle = (TextView) dialog
+			EditText textTitle = (EditText) dialog
 					.findViewById(R.id.newrun_textTitle);
 			SimpleDateFormat dateFormat = new SimpleDateFormat(
 					"yy/dd/MM-HH:mm:ss");
 			textTitle.setText(getUserName() + "-"
 					+ dateFormat.format(new Date()));
+			textTitle.setSelection(textTitle.getText().length());
 		} else {
 			super.onPrepareDialog(id, dialog);
 		}
