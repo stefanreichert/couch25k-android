@@ -3,6 +3,7 @@ package org.couchto5k;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -12,11 +13,13 @@ import org.couchto5k.service.IRunLogService;
 import org.couchto5k.service.RunLogService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -36,6 +39,7 @@ public class RunActivity extends Activity {
 
 	private static final int LOADING_PROGRESS_DIALOG = 42;
 	private static final int WAIT_FOR_SIGNAL_PROGRESS_DIALOG = 43;
+	private static final int CONFIRM_STOP_TRACING_DIALOG = 44;
 	private static final String TAG = "RunActivity";
 	private IRunLogService runLogService;
 	private Run run;
@@ -80,6 +84,8 @@ public class RunActivity extends Activity {
 			// initilize UI
 			updateTextTitle(run);
 			updateTextDistance(run);
+			updateTextAverageSpeed(run);
+			updateTextAverageTimePerKm(run);
 			updateTextTrackPointCount(run);
 			updateChronometerTime(run);
 			run.addListener(propertyChangeListener);
@@ -99,6 +105,8 @@ public class RunActivity extends Activity {
 				Run run = (Run) message.obj;
 				updateTextTrackPointCount(run);
 				updateTextDistance(run);
+				updateTextAverageSpeed(run);
+				updateTextAverageTimePerKm(run);
 				if (!runLogService.isRunTraced(run)) {
 					updateChronometerTime(run);
 				}
@@ -169,6 +177,24 @@ public class RunActivity extends Activity {
 			});
 			return progressDialog;
 		}
+		if (id == CONFIRM_STOP_TRACING_DIALOG) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			return builder
+					.setCancelable(false)
+					.setTitle(R.string.confirm_stop_tracing_title)
+					.setMessage(R.string.confirm_stop_tracing)
+					.setIcon(R.drawable.stop)
+					.setPositiveButton(android.R.string.yes,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									stopTracing();
+									finish();
+								}
+							}).create();
+		}
 		return super.onCreateDialog(id);
 	}
 
@@ -186,7 +212,7 @@ public class RunActivity extends Activity {
 				public void handleMessage(android.os.Message msg) {
 					dismissDialog(WAIT_FOR_SIGNAL_PROGRESS_DIALOG);
 					if (!run.getTrackPoints().isEmpty()) {
-						startTracking();
+						startTracing();
 					}
 				};
 			};
@@ -209,7 +235,7 @@ public class RunActivity extends Activity {
 			return true;
 		}
 		if (R.id.run_menu_stop == item.getItemId()) {
-			stopTracking();
+			stopTracing();
 			return true;
 		}
 		if (R.id.run_menu_runmap == item.getItemId()) {
@@ -217,6 +243,15 @@ public class RunActivity extends Activity {
 			return true;
 		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (runLogService != null && runLogService.isRunTraced(run)) {
+			showDialog(CONFIRM_STOP_TRACING_DIALOG);
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	private void showMap() {
@@ -228,7 +263,7 @@ public class RunActivity extends Activity {
 		startActivityForResult(intent, 42);
 	}
 
-	private void stopTracking() {
+	private void stopTracing() {
 		Toast.makeText(RunActivity.this, "Tracking stopped", Toast.LENGTH_LONG)
 				.show();
 		Chronometer chronometerTime = (Chronometer) findViewById(R.id.run_chronometerTime);
@@ -236,7 +271,7 @@ public class RunActivity extends Activity {
 		runLogService.stopTracingRun(run);
 	}
 
-	private void startTracking() {
+	private void startTracing() {
 		Toast.makeText(RunActivity.this, "Tracking started", Toast.LENGTH_LONG)
 				.show();
 		Chronometer chronometerTime = (Chronometer) findViewById(R.id.run_chronometerTime);
@@ -289,4 +324,25 @@ public class RunActivity extends Activity {
 				+ " meters");
 	}
 
+	private void updateTextAverageSpeed(Run run) {
+		TextView textAverageSpeed = (TextView) findViewById(R.id.run_textAverageSpeed);
+		NumberFormat numberFormat = DecimalFormat.getNumberInstance();
+		numberFormat.setMaximumFractionDigits(2);
+		numberFormat.setMinimumFractionDigits(2);
+		textAverageSpeed.setText(numberFormat.format(run.getAverageSpeed()
+				.doubleValue()) + " km/h");
+	}
+
+	private void updateTextAverageTimePerKm(Run run) {
+		TextView textAverageTimePerKm = (TextView) findViewById(R.id.run_textAverageTimePerKm);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String dateText = dateFormat.format(new Date(run.getAverageTimePerKilometer()));
+		if (dateText.startsWith("00:")) {
+			dateFormat = new SimpleDateFormat("mm:ss");
+			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			dateText = dateFormat.format(new Date(run.getAverageTimePerKilometer()));
+		}
+		textAverageTimePerKm.setText(dateText);
+	}
 }

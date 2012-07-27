@@ -2,7 +2,9 @@ package org.couchto5k.data;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.math.BigDecimal;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import android.location.Location;
@@ -21,6 +23,8 @@ public class Run implements Comparable<Run> {
 	private String title;
 	private String user;
 	private TreeSet<TrackPoint> trackPoints = new TreeSet<TrackPoint>();
+	private long distance = 0;
+	private TrackPoint distanceTrackPoint;
 
 	public void addListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
@@ -30,22 +34,57 @@ public class Run implements Comparable<Run> {
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
 
-	public long getDistance() {
-		long distance = 0;
+	public synchronized long getDistance() {
+		// check whether we have to compute the distance again
+		if (trackPoints.isEmpty() || trackPoints.last() == null
+				|| trackPoints.last().equals(distanceTrackPoint)) {
+			// if we do not have trackpoints yet or there are no new
+			// trackpoints, return the computed value
+			return distance;
+		}
+		// otherwise check whether processed data is still valid...
+		if (distanceTrackPoint != null
+				&& !trackPoints.contains(distanceTrackPoint)) {
+			// we'll something is seriously wrong here, reset!
+			distance = 0;
+			distanceTrackPoint = null;
+		}
 		if (!trackPoints.isEmpty()) {
-			TrackPoint predecessor = null;
-			for (TrackPoint trackPoint : trackPoints) {
-				if (predecessor != null) {
+			SortedSet<TrackPoint> relevantTrackPoints = trackPoints;
+			if (distanceTrackPoint != null) {
+				// if we have a trackpoint (i.e. a computed distance), we only
+				// need to care about elements that were added later
+				relevantTrackPoints = trackPoints.tailSet(distanceTrackPoint);
+				distanceTrackPoint = null;
+			}
+			for (TrackPoint trackPoint : relevantTrackPoints) {
+				if (distanceTrackPoint != null) {
 					float[] results = new float[1];
-					Location.distanceBetween(predecessor.getLat(),
-							predecessor.getLon(), trackPoint.getLat(),
+					Location.distanceBetween(distanceTrackPoint.getLat(),
+							distanceTrackPoint.getLon(), trackPoint.getLat(),
 							trackPoint.getLon(), results);
 					distance = distance + new Float(results[0]).longValue();
 				}
-				predecessor = trackPoint;
+				distanceTrackPoint = trackPoint;
 			}
 		}
 		return distance;
+	}
+
+	public BigDecimal getAverageSpeed() {
+		if (getDistance() > 0 && getTime() > 0) {
+			double timeInSeconds = getTime() / 1000;
+			double speed = (getDistance() / timeInSeconds) * 3.6;
+			return new BigDecimal(speed);
+		}
+		return new BigDecimal(0);
+	}
+
+	public long getAverageTimePerKilometer() {
+		if (getTime() > 0 && getDistance() > 0) {
+			return (getTime() / getDistance()) * 1000;
+		}
+		return 0;
 	}
 
 	public long getTime() {

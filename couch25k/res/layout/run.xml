@@ -15,7 +15,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="5dip"
             android:gravity="center_vertical"
-            android:minWidth="100dip"
+            android:minWidth="120dip"
             android:text="@string/run_title_label" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="5dip"
             android:gravity="center_vertical"
-            android:minWidth="100dip"
+            android:minWidth="120dip"
             android:text="@string/run_time_label" />
 
         <Chronometer
@@ -62,7 +62,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="5dip"
             android:gravity="center_vertical"
-            android:minWidth="100dip"
+            android:minWidth="120dip"
             android:text="@string/run_distance_label" />
 
         <TextView
@@ -81,13 +81,63 @@
         android:layout_height="wrap_content" >
 
         <TextView
+            android:id="@+id/run_labelAverageSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="120dip"
+            android:text="@string/run_average_speed_label" />
+
+        <TextView
+            android:id="@+id/run_textAverageSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelAverageSpeed"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/run_labelAverageTimePerKm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:gravity="center_vertical"
+            android:minWidth="120dip"
+            android:text="@string/run_average_timeperkm_label" />
+
+        <TextView
+            android:id="@+id/run_textAverageTimePerKm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/run_labelAverageTimePerKm"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
             android:id="@+id/run_labelTrackpointCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="5dip"
             android:gravity="center_vertical"
-            android:minWidth="100dip"
+            android:minWidth="120dip"
             android:text="@string/run_trackpoint_count_label" />
 
         <TextView
