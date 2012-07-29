@@ -184,7 +184,7 @@ public class RunActivity extends Activity {
 					.setTitle(R.string.confirm_stop_tracing_title)
 					.setMessage(R.string.confirm_stop_tracing)
 					.setIcon(R.drawable.stop)
-					.setPositiveButton(android.R.string.yes,
+					.setPositiveButton(R.string.confirm_stop_tracing_yes,
 							new OnClickListener() {
 
 								@Override
@@ -192,6 +192,15 @@ public class RunActivity extends Activity {
 										int which) {
 									stopTracing();
 									finish();
+								}
+							})
+					.setNegativeButton(R.string.confirm_stop_tracing_no,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// intentionally do nothing
 								}
 							}).create();
 		}
@@ -337,11 +346,13 @@ public class RunActivity extends Activity {
 		TextView textAverageTimePerKm = (TextView) findViewById(R.id.run_textAverageTimePerKm);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String dateText = dateFormat.format(new Date(run.getAverageTimePerKilometer()));
+		String dateText = dateFormat.format(new Date(run
+				.getAverageTimePerKilometer()));
 		if (dateText.startsWith("00:")) {
 			dateFormat = new SimpleDateFormat("mm:ss");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-			dateText = dateFormat.format(new Date(run.getAverageTimePerKilometer()));
+			dateText = dateFormat.format(new Date(run
+					.getAverageTimePerKilometer()));
 		}
 		textAverageTimePerKm.setText(dateText);
 	}

@@ -22,7 +22,9 @@
     <string name="newrun_enter_title_request">Please enter the run\'s title.</string>
     <string name="newrun_proceed">Proceed</string>
     <string name="confirm_stop_tracing_title">Stop Tracing</string>
-    <string name="confirm_stop_tracing">Do you want to stop tracing the current run?</string>
+    <string name="confirm_stop_tracing">This will stop tracing the current run. Do you want to proceed?</string>
+    <string name="confirm_stop_tracing_yes">Yes</string>
+    <string name="confirm_stop_tracing_no">No</string>
     <string name="progress_title">Working</string>
     <string name="progress_loading">Load Data&#8230;</string>
     <string name="progress_wait_for_signal">Wait For Signal&#8230;</string>
