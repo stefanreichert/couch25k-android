@@ -9,12 +9,11 @@ couch25k is based on Android 2.2 (API Level 8), Google API (MapView), Touch DB (
 * [TouchDB Android](https://github.com/couchbaselabs/TouchDB-Android/)
  * Module TouchDB Android
  * Module TouchDB Android Ektorp (O/R Mapper)
- * Module TouchDB Android Listener (Replication)
 
 ## Project Setup
 
 couch25k-android was build with Eclipse Indigo and ADT 18.0.0. The .project file is included so a simple checkout will work. The dependant projects are included as libs, the revision is listed above. You might want to checkout the current revision of TouchDB to get the latest changes. Simply get the TouchDB projects from GitHub, delete all libraries from the `libs` folder and reference the three TouchDB projects as library projects (Android project properties).
-*Just a little hint: It will only work if all 4 projects (couch25k-android and the TouchDB projects) are located in the same folder.*
+*Just a little hint: It will only work if all 3 projects (couch25k-android and the TouchDB projects) are located in the same folder.*
 
 ## Google Maps Key
 
