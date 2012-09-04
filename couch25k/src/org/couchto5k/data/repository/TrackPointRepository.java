@@ -10,7 +10,6 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.ViewResult;
 import org.ektorp.ViewResult.Row;
-import org.ektorp.impl.NameConventions;
 import org.ektorp.support.CouchDbRepositorySupport;
 
 import com.couchbase.touchdb.TDDatabase;
@@ -50,8 +49,7 @@ public class TrackPointRepository extends CouchDbRepositorySupport<TrackPoint> {
 
 	public List<TrackPoint> findByRun(Run run) {
 		String runId = run.getTitle() + "#" + run.getUser();
-		ViewQuery viewQuery = new ViewQuery()
-				.designDocId(NameConventions.designDocName(TrackPoint.class))
+		ViewQuery viewQuery = new ViewQuery().designDocId("_design/TrackPoint")
 				.viewName(VIEW_TRACKPOINT_BY_RUN).key(runId);
 		ViewResult result = db.queryView(viewQuery);
 		List<TrackPoint> trackPoints = new ArrayList<TrackPoint>();
@@ -63,8 +61,7 @@ public class TrackPointRepository extends CouchDbRepositorySupport<TrackPoint> {
 	}
 
 	public List<String[]> findRuns() {
-		ViewQuery viewQuery = new ViewQuery()
-				.designDocId(NameConventions.designDocName(TrackPoint.class))
+		ViewQuery viewQuery = new ViewQuery().designDocId("_design/TrackPoint")
 				.viewName(VIEW_TRACKPOINT_BY_RUN).group(true);
 		ViewResult result = db.queryView(viewQuery);
 		List<String[]> runIds = new ArrayList<String[]>();
