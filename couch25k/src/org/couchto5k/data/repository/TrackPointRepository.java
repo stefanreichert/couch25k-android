@@ -23,7 +23,6 @@ public class TrackPointRepository extends CouchDbRepositorySupport<TrackPoint> {
 
 	public TrackPointRepository(CouchDbConnector databaseConnector) {
 		super(TrackPoint.class, databaseConnector);
-		initStandardDesignDocument();
 	}
 
 	public void createViews(TDDatabase database) {
