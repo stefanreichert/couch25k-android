@@ -1,127 +1,13 @@
 package org.couchto5k;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.couchto5k.data.Run;
-import org.couchto5k.data.TrackPoint;
-import org.couchto5k.map.RunOverlay;
-import org.couchto5k.map.TrackPointOverlayItem;
-import org.couchto5k.service.IRunLogService;
-import org.couchto5k.service.RunLogService;
-
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
-
-public class RunMapActivity extends MapActivity {
-
-	static final String TAG = "RunMapActivity";
-
-	private ServiceConnection serviceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			run.removeListener(propertyChangeListener);
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			runLogService = (IRunLogService) service;
-			// get the runs from the database
-			if (getIntent().hasExtra(Run.ID_PROPERTY)) {
-				run = runLogService.loadRun(getIntent().getStringExtra(
-						Run.ID_PROPERTY));
-				updateUI();
-				run.addListener(propertyChangeListener);
-			} else {
-				// close this activity as the item details cannot be retrieved
-				setResult(RESULT_CANCELED);
-				finish();
-			}
-		}
-
-	};
-
-	private PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
-
-		private Handler handler = new Handler() {
-			public void handleMessage(Message message) {
-				updateUI();
-			};
-		};
-
-		@Override
-		public void propertyChange(PropertyChangeEvent event) {
-			if (event.getSource() instanceof Run) {
-				if (Run.TRACK_POINTS_PROPERTY.equals(event.getPropertyName())) {
-					handler.sendMessage(Message.obtain(handler, 42, run));
-				}
-			}
-		}
-	};
-
-	private RunOverlay runOverlay;
-	private IRunLogService runLogService;
-	private Run run;
-	private MapView mapView;
+public class RunMapActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.runmap);
-		mapView = (MapView) findViewById(R.id.mapview);
-		Drawable trackPointDefault = getResources().getDrawable(
-				R.drawable.trackpoint);
-		Drawable trackPointStart = getResources().getDrawable(
-				R.drawable.trackpoint_start);
-		Drawable trackPointFinish = getResources().getDrawable(
-				R.drawable.trackpoint_finish);
-		runOverlay = new RunOverlay(trackPointDefault, trackPointStart,
-				trackPointFinish);
-		mapView.getOverlays().add(runOverlay);
-		mapView.setKeepScreenOn(true);
-	}
-
-	private void updateUI() {
-		List<TrackPointOverlayItem> overlayItems = new ArrayList<TrackPointOverlayItem>();
-		for (TrackPoint trackPoint : run.getTrackPoints()) {
-			overlayItems.add(new TrackPointOverlayItem(trackPoint));
-		}
-		runOverlay.addOverlays(overlayItems);
-		mapView.invalidate();
-		// center last trackpoint
-		if (!overlayItems.isEmpty()) {
-			TrackPointOverlayItem item = overlayItems
-					.get(overlayItems.size() - 1);
-			mapView.getController().animateTo(item.getPoint());
-		}
-	}
-
-	@Override
-	protected void onStart() {
-		bindService(new Intent(this, RunLogService.class), serviceConnection, 0);
-		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		unbindService(serviceConnection);
-		super.onPause();
-	}
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
+		setContentView(R.layout.runmap_fragment);
 	}
 }

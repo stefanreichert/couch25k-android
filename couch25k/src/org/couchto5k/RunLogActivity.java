@@ -1,132 +1,68 @@
 package org.couchto5k;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-import org.couchto5k.adapter.RunListAdapter;
 import org.couchto5k.data.Run;
-import org.couchto5k.service.IRunLogService;
+import org.couchto5k.fragment.RunFragment;
+import org.couchto5k.fragment.RunLogFragment;
+import org.couchto5k.fragment.RunMapFragment;
+import org.couchto5k.fragment.listener.IRunSelectionListener;
 import org.couchto5k.service.RunLogService;
+import org.couchto5k.service.RunLogServiceConnection;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-public class RunLogActivity extends Activity {
+public class RunLogActivity extends FragmentActivity implements
+		IRunSelectionListener {
 
-	private static final int USER_DIALOG = 42;
-	private static final int NEWRUN_DIALOG = 43;
-	private static final int LOADING_PROGRESS_DIALOG = 44;
-	private static final String USERNAME_PREFERENCE = "couch25k.user";
+	public static final int USER_DIALOG = 42;
+	public static final int NEWRUN_DIALOG = 43;
+	public static final int LOADING_PROGRESS_DIALOG = 44;
+	public static final String USERNAME_PREFERENCE = "couch25k.user";
 
-	private Collection<Run> runs;
-	private IRunLogService runLogService;
+	private RunLogServiceConnection serviceConnection = new RunLogServiceConnection();
 
-	final Handler handler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			dismissDialog(LOADING_PROGRESS_DIALOG);
-			updateWidgets();
-		};
-	};
-
-	private ServiceConnection serviceConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// intentionally do nothing
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			runLogService = (IRunLogService) service;
-			refreshUI();
-		}
-	};
-
-	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.runlog);
-		ListView runLogList = (ListView) findViewById(R.id.runLog_list);
-		runLogList.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				ListView listView = (ListView) parent;
-				Run selectedRun = (Run) listView.getItemAtPosition(position);
-				launchRunActivity(selectedRun.getId());
-			}
-		});
+		setContentView(R.layout.runlog_fragment);
+		RunLogFragment runLogFragment = (RunLogFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.runlog_fragment);
+		runLogFragment.addListener(this);
 		startService(new Intent(this, RunLogService.class));
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.runlog_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		if (R.id.runLog_menu_user == item.getItemId()) {
-			showDialog(USER_DIALOG);
-			return true;
-		}
-		if (R.id.runLog_menu_run == item.getItemId()) {
-			showDialog(NEWRUN_DIALOG);
-			return true;
-		}
-		if (R.id.runLog_menu_refresh == item.getItemId()) {
-			refreshUI();
-			return true;
-		}
-		return super.onMenuItemSelected(featureId, item);
-	}
-
-	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		stopService(new Intent(this, RunLogService.class));
 		super.onDestroy();
 	}
 
 	@Override
-	protected void onStart() {
+	public void onStart() {
 		bindService(new Intent(this, RunLogService.class), serviceConnection, 0);
 		super.onStart();
 	}
 
 	@Override
-	protected void onStop() {
+	public void onStop() {
 		unbindService(serviceConnection);
 		super.onStop();
 	}
 
-	@Override
 	protected Dialog onCreateDialog(int id) {
 		if (id == USER_DIALOG) {
 			return createUserNameDialog();
@@ -145,7 +81,6 @@ public class RunLogActivity extends Activity {
 		return super.onCreateDialog(id);
 	}
 
-	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		if (id == USER_DIALOG) {
 			EditText textName = (EditText) dialog
@@ -165,59 +100,6 @@ public class RunLogActivity extends Activity {
 		}
 	}
 
-	private void updateWidgets() {
-		List<Run> runsToBeAdapted = new ArrayList<Run>(runs);
-		// update the list
-		ListView runLogList = (ListView) findViewById(R.id.runLog_list);
-		RunListAdapter runListAdapter = new RunListAdapter(RunLogActivity.this,
-				runsToBeAdapted);
-		runListAdapter.sort(new Comparator<Run>() {
-			@Override
-			public int compare(Run lhs, Run rhs) {
-				return lhs.compareTo(rhs);
-			}
-		});
-		runLogList.setAdapter(runListAdapter);
-		TextView runLogListHeader = (TextView) findViewById(R.id.runLog_listLabel);
-		String label = getResources().getText(R.string.runlog_list_label)
-				.toString();
-		runLogListHeader.setText(String.format(label, runsToBeAdapted.size()));
-	}
-
-	private String getUserName() {
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		return preferences.getString(USERNAME_PREFERENCE, "anonymous");
-	}
-
-	private void setUserName(String name) {
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putString(USERNAME_PREFERENCE, name);
-		editor.commit();
-	}
-
-	private void refreshUI() {
-		Thread loadRunsThread = new Thread("run log worker") {
-
-			@Override
-			public void run() {
-				runs = runLogService.getRuns();
-				handler.sendMessage(Message.obtain());
-			}
-		};
-		loadRunsThread.start();
-		showDialog(LOADING_PROGRESS_DIALOG);
-	}
-
-	private void launchRunActivity(String id) {
-		// When clicked, show the details
-		Intent intent = new Intent(this, RunActivity.class);
-		if (id != null) {
-			intent.putExtra(Run.ID_PROPERTY, id);
-		}
-		startActivityForResult(intent, 42);
-	}
-
 	private Dialog createNewRunDialog() {
 		final Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.dialog_newrun);
@@ -230,10 +112,10 @@ public class RunLogActivity extends Activity {
 			public void onClick(View view) {
 				TextView textTitle = (TextView) dialog
 						.findViewById(R.id.newrun_textTitle);
-				Run run = runLogService.addRun(textTitle.getText().toString(),
-						getUserName());
+				Run run = serviceConnection.getRunLogService().addRun(
+						textTitle.getText().toString(), getUserName());
 				dismissDialog(NEWRUN_DIALOG);
-				launchRunActivity(run.getId());
+				handleRunSelected(run.getId());
 			}
 		});
 		return dialog;
@@ -258,4 +140,38 @@ public class RunLogActivity extends Activity {
 		return dialog;
 	}
 
+	private void setUserName(String name) {
+		SharedPreferences preferences = getPreferences(Activity.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString(USERNAME_PREFERENCE, name);
+		editor.commit();
+	}
+
+	private String getUserName() {
+		SharedPreferences preferences = getPreferences(Activity.MODE_PRIVATE);
+		return preferences.getString(USERNAME_PREFERENCE, "anonymous");
+	}
+
+	@Override
+	public void handleRunSelected(String runId) {
+		// check run map
+		RunMapFragment runMapFragment = (RunMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.runmap_fragment);
+		if (runMapFragment != null && runMapFragment.isInLayout()) {
+			// TODO update map fragment manually
+		}
+		// check run details
+		RunFragment runFragment = (RunFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.run_fragment);
+		if (runFragment != null && runFragment.isInLayout()) {
+			runFragment.refreshUI(serviceConnection.getRunLogService().loadRun(
+					runId));
+		} else {
+			Intent intent = new Intent(this, RunActivity.class);
+			if (runId != null) {
+				intent.putExtra(Run.ID_PROPERTY, runId);
+			}
+			startActivityForResult(intent, 42);
+		}
+	}
 }
